@@ -8,10 +8,13 @@ urlpatterns = [
     # route is a string contains a URL pattern
     # view refers to the view function
     # name the URL
+    path('static/', views.static_django_view, name='static_django'),
 
     # path for about view
+    path('about/', views.about_view, name='about'),
 
     # path for contact us view
+    path('contact/', views.contact_view, name='contact'),
 
     # path for registration
 
