@@ -134,7 +134,7 @@ def add_review(request, dealer_id=None):
         return render(request, 'djangoapp/add_review.html', context)
 
     if request.method == 'POST':
-        python_server_url = "http://localhost:5000/api/post_review"
+        python_server_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
         review_data = request.POST.dict()
 
         try:
