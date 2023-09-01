@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import DealerReview
 # from .restapis import related methods
 from django.contrib.auth.forms import UserCreationForm
-from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf 
+from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -103,18 +103,12 @@ def get_dealerships(request):
 # def get_dealer_details(request, dealer_id):
 # ...
 def get_dealer_details(request, dealer_id):
-    # Define the URL of the reviews service (Flask app)
-    reviews_service_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+    # Call the get_dealer_reviews_from_cf method to get reviews
+    reviews = get_dealer_reviews_from_cf(dealer_id)
 
-    # Make a GET request to the reviews service to fetch reviews for the specified dealer_id
-    response = requests.get(reviews_service_url, params={'id': dealer_id})
-
-    if response.status_code == 200:
-        # If the request is successful, parse the JSON response
-        reviews = response.json()
-    else:
-        # Handle errors here (e.g., return an empty list or show an error message)
-        reviews = []
+    # Analyze sentiment for each review and add it to the review dictionary
+    for review in reviews:
+        review['sentiment'] = analyze_review_sentiments(review['review'])
 
     # Create a context dictionary to pass data to the template
     context = {
