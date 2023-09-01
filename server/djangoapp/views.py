@@ -75,8 +75,21 @@ def custom_signup(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     if request.method == "GET":
-        url ="https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-        dealerships = get_dealers_from_cf(url)
+        state = request.GET.get("state")
+        dealer_id = request.GET.get("dealer_id")
+
+        # URL with optional parameters based on the state and dealer ID
+        url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        params = {}
+        
+        if state:
+            params["state"] = state
+        
+        if dealer_id:
+            params["dealerId"] = dealer_id
+
+        # Call get_dealers_from_cf with URL parameters
+        dealerships = get_dealers_from_cf(url, **params)
         dealer_names = [dealer.short_name for dealer in dealerships]
 
         # Pass the 'dealer_names' variable in the context to the template
