@@ -11,13 +11,18 @@ REVIEWS_BASE_URL = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-t
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
-def get_request(url, **kwargs):
+def get_request(url, api_key=None, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
     try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs)
+        # Create headers with the API key
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic {}'.format(api_key)
+        }
+        
+        # Call get method of requests library with URL, headers, and parameters
+        response = requests.get(url, headers=headers, params=kwargs)
     except:
         # If any error occurs
         print("Network exception occurred")
@@ -113,6 +118,8 @@ def get_dealers_by_state(state):
 def get_dealer_reviews_from_cf(dealer_id):
     # Call get_request with the base URL for reviews and dealerId parameter
     url = f"{REVIEWS_BASE_URL}?id={dealer_id}"
+    # Pass the API key to the get_request function
+    api_key = "OkANvrZmn9NYhSIQNSO1z5lIlZ5c3ays3FsQDOBUdrhx"
     json_result = get_request(url)
 
     results = []
@@ -128,7 +135,7 @@ def get_dealer_reviews_from_cf(dealer_id):
                 car_make=review_data.get("car_make", ""),
                 car_model=review_data.get("car_model", ""),
                 car_year=review_data.get("car_year", ""),
-                sentiment=review_data.get("sentiment", "")
+                sentiment=analyze_review_sentiments(review_data.get("review", ""))
             )
             results.append(dealer_review)
 
@@ -139,3 +146,32 @@ def get_dealer_reviews_from_cf(dealer_id):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(dealerreview):
+    # Define the URL for sentiment analysis
+    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/ae38d3e7-7f76-412f-9ea3-da080c263c49"
+
+    # Construct the parameters from the dealerreview object
+    params = {
+        "text": dealerreview.review,
+        "version": "2021-09-01",
+        "features": "sentiment",
+        "return_analyzed_text": True
+    }
+
+    # Your API key for Watson NLU
+    api_key = "OkANvrZmn9NYhSIQNSO1z5lIlZ5c3ays3FsQDOBUdrhx"
+
+    try:
+        # Make the GET request to Watson NLU
+        response = get_request(url, api_key=api_key, **params)
+
+        # Check if the response is successful
+        if "sentiment" in response:
+            sentiment = response["sentiment"]["document"]["label"]
+            return sentiment
+        else:
+            return None
+    except Exception as e:
+        # Handle any exceptions here
+        print("Error analyzing sentiment:", str(e))
+        return None
