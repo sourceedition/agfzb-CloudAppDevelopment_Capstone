@@ -103,8 +103,18 @@ def get_dealerships(request):
 # def get_dealer_details(request, dealer_id):
 # ...
 def get_dealer_details(request, dealer_id):
-    # Call get_dealer_reviews_from_cf to get reviews for the specified dealer_id
-    reviews = get_dealer_reviews_from_cf(dealer_id)
+    # Define the URL of the reviews service (Flask app)
+    reviews_service_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+
+    # Make a GET request to the reviews service to fetch reviews for the specified dealer_id
+    response = requests.get(reviews_service_url, params={'id': dealer_id})
+
+    if response.status_code == 200:
+        # If the request is successful, parse the JSON response
+        reviews = response.json()
+    else:
+        # Handle errors here (e.g., return an empty list or show an error message)
+        reviews = []
 
     # Create a context dictionary to pass data to the template
     context = {

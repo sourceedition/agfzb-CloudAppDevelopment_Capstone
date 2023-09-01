@@ -1,9 +1,12 @@
 import requests
 import json
 # import related models here
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
+# Define the base URLs from get-dealership.js and reviews.py
+DEALERSHIP_BASE_URL = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+REVIEWS_BASE_URL = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -32,11 +35,35 @@ def get_request(url, **kwargs):
 # def get_dealers_from_cf(url, **kwargs):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a CarDealer object list
-def get_dealers_from_cf(url, **kwargs):
+def get_dealers_from_cf():
+    # Call get_request with the base URL for dealerships
+    json_result = get_request(DEALERSHIP_BASE_URL)
+
     results = []
-    # Call get_request with a URL parameter
+    if json_result and "docs" in json_result:
+        dealers = json_result["docs"]
+        for dealer in dealers:
+            # Create a CarDealer object with values in `dealer` dictionary
+            dealer_obj = CarDealer(
+                address=dealer.get("address", ""),
+                city=dealer.get("city", ""),
+                full_name=dealer.get("full_name", ""),
+                id=dealer.get("id", ""),
+                lat=dealer.get("lat", ""),
+                long=dealer.get("long", ""),
+                short_name=dealer.get("short_name", ""),
+                st=dealer.get("st", ""),
+                zip=dealer.get("zip", "")
+            )
+            results.append(dealer_obj)
+    return results
+
+def get_dealer_by_id(dealer_id):
+    # Call get_request with the base URL for dealerships and dealerId parameter
+    url = f"{DEALERSHIP_BASE_URL}?dealerId={dealer_id}"
     json_result = get_request(url)
-    
+
+    results = []
     if json_result and "docs" in json_result:
         dealers = json_result["docs"]
         for dealer in dealers:
@@ -55,32 +82,12 @@ def get_dealers_from_cf(url, **kwargs):
             results.append(dealer_obj)
     return results
 
-def get_dealer_by_id(url, dealer_id):
-    # Call get_request with a URL parameter and a dealerId parameter
-    json_result = get_request(url, dealerId=dealer_id)
-    
-    if json_result and "docs" in json_result:
-        dealers = json_result["docs"]
-        for dealer in dealers:
-            # Create a CarDealer object with values in `dealer` dictionary
-            dealer_obj = CarDealer(
-                address=dealer.get("address", ""),
-                city=dealer.get("city", ""),
-                full_name=dealer.get("full_name", ""),
-                id=dealer.get("id", ""),
-                lat=dealer.get("lat", ""),
-                long=dealer.get("long", ""),
-                short_name=dealer.get("short_name", ""),
-                st=dealer.get("st", ""),
-                zip=dealer.get("zip", "")
-            )
-            results.append(dealer_obj)
-    return results
+def get_dealers_by_state(state):
+    # Call get_request with the base URL for dealerships and state parameter
+    url = f"{DEALERSHIP_BASE_URL}?state={state}"
+    json_result = get_request(url)
 
-def get_dealers_by_state(url, state):
-    # Call get_request with a URL parameter and a state parameter
-    json_result = get_request(url, state=state)
-    
+    results = []
     if json_result and "docs" in json_result:
         dealers = json_result["docs"]
         for dealer in dealers:
@@ -103,20 +110,18 @@ def get_dealers_by_state(url, state):
 # def get_dealer_by_id_from_cf(url, dealerId):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
-def get_dealer_reviews_from_cf(url, dealer_id):
+def get_dealer_reviews_from_cf(dealer_id):
+    # Call get_request with the base URL for reviews and dealerId parameter
+    url = f"{REVIEWS_BASE_URL}?id={dealer_id}"
+    json_result = get_request(url)
+
     results = []
-    
-    # Call get_request with a URL parameter and a dealerId parameter
-    json_result = get_request(url, dealerId=dealer_id)
-    
-    if json_result and "reviews" in json_result:
-        reviews_data = json_result["reviews"]
-        
-        for review_data in reviews_data:
+    if json_result:
+        for review_data in json_result:
             # Create a DealerReview object with values from the JSON data
             dealer_review = DealerReview(
-                review_id=review_data.get("review_id", ""),
-                dealer_id=review_data.get("dealer_id", ""),
+                review_id=review_data.get("id", ""),
+                dealer_id=review_data.get("dealership", ""),
                 review=review_data.get("review", ""),
                 purchase=review_data.get("purchase", ""),
                 purchase_date=review_data.get("purchase_date", ""),
@@ -125,9 +130,8 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                 car_year=review_data.get("car_year", ""),
                 sentiment=review_data.get("sentiment", "")
             )
-            
             results.append(dealer_review)
-    
+
     return results
 
 
