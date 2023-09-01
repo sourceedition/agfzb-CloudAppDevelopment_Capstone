@@ -3,9 +3,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
+from .models import DealerReview
 # from .restapis import related methods
 from django.contrib.auth.forms import UserCreationForm
-from .restapis import get_dealers_from_cf
+from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -101,19 +102,18 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
-def get_reviews(request, dealer_id=None):
-    if dealer_id is None:
-        return JsonResponse({"error": "Missing 'dealer_id' parameter in the URL"}, status=400)
+def get_dealer_details(request, dealer_id):
+    # Call get_dealer_reviews_from_cf to get reviews for the specified dealer_id
+    reviews = get_dealer_reviews_from_cf(dealer_id)
 
-    python_server_url = f"http://localhost:5000/api/get_reviews?id={dealer_id}"
-    try:
-        response = requests.get(python_server_url)
-        reviews = response.json()
-        context = {'reviews': reviews}
-        return render(request, 'djangoapp/dealer_details.html', context)
-    except requests.exceptions.RequestException as e:
-        messages.error(request, "Failed to fetch reviews")
-        return render(request, 'djangoapp/dealer_details.html')
+    # Create a context dictionary to pass data to the template
+    context = {
+        'dealer_id': dealer_id,
+        'reviews': reviews,
+    }
+
+    # Render the template with the context and return an HttpResponse
+    return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
