@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 # from .restapis import related methods
+from django.contrib.auth.forms import UserCreationForm
 from .restapis import get_dealers_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -69,7 +70,7 @@ def custom_signup(request):
             return redirect('djangoapp:index')  # Redirect to your desired page after registration
     else:
         form = UserCreationForm()
-    return render(request, 'registration.html', {'form': form})
+    return render(request, 'djangoapp/registration.html', {'form': form})
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
@@ -79,9 +80,9 @@ def get_dealerships(request):
         dealer_names = [dealer.short_name for dealer in dealerships]
 
         # Pass the 'dealer_names' variable in the context to the template
-        context = {'dealer_names': dealer_names}
+        context = {'dealerships': dealerships}
 
-        return render(request, 'index.html', context)
+        return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
