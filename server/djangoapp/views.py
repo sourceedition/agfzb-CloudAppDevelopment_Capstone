@@ -76,8 +76,12 @@ def get_dealerships(request):
     if request.method == "GET":
         url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-        return HttpResponse(dealer_names)
+        dealer_names = [dealer.short_name for dealer in dealerships]
+
+        # Pass the 'dealer_names' variable in the context to the template
+        context = {'dealer_names': dealer_names}
+
+        return render(request, 'index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer

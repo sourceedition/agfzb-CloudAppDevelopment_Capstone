@@ -37,7 +37,7 @@ class CarModel(models.Model):
     ]
     car_type = models.CharField(max_length=10, choices=CAR_TYPES)
     
-    year = models.DateField()  # Year of the car model
+    year = models.DateField()
     
     # Add other fields as needed
 

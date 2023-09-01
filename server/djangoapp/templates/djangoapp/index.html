@@ -65,6 +65,39 @@
     </nav>
 
     <!--Add a dealer table here -->
+    <div class="container mt-4">
+        <h2>Dealership List</h2>
+        <table
+            id="dealerTable"
+            data-toggle="table"
+            data-pagination="true"
+            data-search="true"
+            data-show-columns="true"
+        >
+            <thead>
+                <tr>
+                    <th data-field="id" data-sortable="true">ID</th>
+                    <th data-field="short_name" data-sortable="true">Short Name</th>
+                    <th data-field="full_name" data-sortable="true">Full Name</th>
+                    <th data-field="city" data-sortable="true">City</th>
+                    <th data-field="state" data-sortable="true">State</th>
+                    <th data-field="zip" data-sortable="true">ZIP</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dealer in dealerships %}
+                <tr>
+                    <td>{{ dealer.id }}</td>
+                    <td>{{ dealer.short_name }}</td>
+                    <td>{{ dealer.full_name }}</td>
+                    <td>{{ dealer.city }}</td>
+                    <td>{{ dealer.st }}</td>
+                    <td>{{ dealer.zip }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     </body>
 
