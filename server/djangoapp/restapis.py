@@ -40,27 +40,32 @@ def get_request(url, api_key=None, **kwargs):
 # def get_dealers_from_cf(url, **kwargs):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a CarDealer object list
-def get_dealers_from_cf():
-    # Call get_request with the base URL for dealerships
-    json_result = get_request(DEALERSHIP_BASE_URL)
-
+def get_dealers_from_cf(url, **kwargs):
     results = []
-    if json_result and "docs" in json_result:
-        dealers = json_result["docs"]
+    state = kwargs.get("state")
+    if state:
+        json_result = get_request(url, state=state)
+    else:
+        json_result = get_request(url)
+
+    print('json_result RESTAPIS', json_result)    
+
+    if json_result:
+        # Get the row list in JSON as dealers
+        dealers = json_result
+
+        # For each dealer object
         for dealer in dealers:
-            # Create a CarDealer object with values in `dealer` dictionary
-            dealer_obj = CarDealer(
-                address=dealer.get("address", ""),
-                city=dealer.get("city", ""),
-                full_name=dealer.get("full_name", ""),
-                id=dealer.get("id", ""),
-                lat=dealer.get("lat", ""),
-                long=dealer.get("long", ""),
-                short_name=dealer.get("short_name", ""),
-                st=dealer.get("st", ""),
-                zip=dealer.get("zip", "")
-            )
+            # Get its content in `doc` object
+            dealer_doc = dealer
+            # print(dealer_doc)
+            # Create a CarDealer object with values in `doc` object
+            dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
+                                   id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"], full_name=dealer_doc["full_name"],
+                                
+                                   st=dealer_doc["st"], zip=dealer_doc["zip"],  short_name=dealer_doc["short_name"])
             results.append(dealer_obj)
+
     return results
 
 def get_dealer_by_id(dealer_id):
