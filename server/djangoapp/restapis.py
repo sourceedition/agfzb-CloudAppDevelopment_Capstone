@@ -130,19 +130,23 @@ def get_dealer_reviews_from_cf(dealer_id):
     results = []
     if json_result:
         for review_data in json_result:
-            # Create a DealerReview object with values from the JSON data
-            dealer_review = DealerReview(
-                review_id=review_data["id"],
-                dealer_id=review_data["dealership"],
-                review=review_data["review"],
-                purchase=review_data["purchase"],
-                purchase_date=review_data["purchase_date"],
-                car_make=review_data["car_make"],
-                car_model=review_data["car_model"],
-                car_year=review_data["car_year"],
-                sentiment=analyze_review_sentiments(review_data["review"])
-            )
-            results.append(dealer_review)
+            # Check if all required fields exist in review_data
+            if "id" in review_data and "dealership" in review_data and "review" in review_data \
+                    and "purchase" in review_data and "purchase_date" in review_data \
+                    and "car_make" in review_data and "car_model" in review_data and "car_year" in review_data:
+                # If all fields are available, create the DealerReview object
+                dealer_review = DealerReview(
+                    review_id=review_data["id"],
+                    dealer_id=review_data["dealership"],
+                    review=review_data["review"],
+                    purchase=review_data["purchase"],
+                    purchase_date=review_data["purchase_date"],
+                    car_make=review_data["car_make"],
+                    car_model=review_data["car_model"],
+                    car_year=review_data["car_year"],
+                    sentiment=None
+                )
+                results.append(dealer_review)
 
     return results
 
@@ -169,10 +173,13 @@ def analyze_review_sentiments(dealerreview):
     try:
         # Make the GET request to Watson NLU
         response = get_request(url, api_key=api_key, **params)
+        
+        print("API Response:", response)  # Print the response for debugging
 
         # Check if the response is successful
         if "sentiment" in response:
             sentiment = response["sentiment"]["document"]["label"]
+            print("Sentiment:", sentiment)  # Print the extracted sentiment for debugging
             return sentiment
         else:
             return None
