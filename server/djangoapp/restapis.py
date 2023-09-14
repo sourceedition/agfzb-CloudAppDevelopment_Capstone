@@ -157,18 +157,18 @@ def get_dealer_reviews_from_cf(dealer_id):
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(dealerreview):
     # Define the URL for sentiment analysis
-    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/ae38d3e7-7f76-412f-9ea3-da080c263c49"
+    url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/ae38d3e7-7f76-412f-9ea3-da080c263c49'
 
     # Construct the parameters from the dealerreview object
     params = {
         "text": dealerreview.review,
-        "version": "2021-09-01",
+        "version": "2022-04-07",
         "features": "sentiment",
         "return_analyzed_text": True
     }
 
     # Your API key for Watson NLU
-    api_key = "OkANvrZmn9NYhSIQNSO1z5lIlZ5c3ays3FsQDOBUdrhx"
+    api_key = 'OkANvrZmn9NYhSIQNSO1z5lIlZ5c3ays3FsQDOBUdrhx'
 
     try:
         # Make the GET request to Watson NLU
