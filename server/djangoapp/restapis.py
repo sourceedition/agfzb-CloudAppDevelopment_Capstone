@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 # Define the base URLs from get-dealership.js and reviews.py
 DEALERSHIP_BASE_URL = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-REVIEWS_BASE_URL = 'https://plumball33-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews'
+REVIEWS_BASE_URL = 'https://plumball33-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews?id={dealer_id}'
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -70,7 +70,7 @@ def get_dealers_from_cf(url, **kwargs):
 
 def get_dealer_by_id(dealer_id):
     # Call get_request with the base URL for dealerships and dealerId parameter
-    url = f"{DEALERSHIP_BASE_URL}?dealerId={dealer_id}"
+    url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
     json_result = get_request(url)
 
     results = []
@@ -122,7 +122,7 @@ def get_dealers_by_state(state):
 # - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf(dealer_id):
     # Call get_request with the base URL for reviews and dealerId parameter
-    url = f"{REVIEWS_BASE_URL}?id={dealer_id}"
+    url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
     # Pass the API key to the get_request function
     api_key = "OkANvrZmn9NYhSIQNSO1z5lIlZ5c3ays3FsQDOBUdrhx"
     json_result = get_request(url, api_key=api_key)

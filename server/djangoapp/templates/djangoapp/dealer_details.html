@@ -39,15 +39,22 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ review.name }}</h5>
-                            <p class="card-text">{{ review.review }}</p>
+                            <h5 class="card-title">Review ID: {{ review.review_id }}</h5>
+                            <p class="card-text">Review: {{ review.review }}</p>
                             <p class="card-text"><strong>Car: </strong>{{ review.car_make }} {{ review.car_model }} ({{ review.car_year }})</p>
                             <p class="card-text"><strong>Purchase: </strong>{{ review.purchase }}</p>
                             <p class="card-text"><strong>Purchase Date: </strong>{{ review.purchase_date }}</p>
+                            <p class="card-text"><strong>Dealer ID: </strong>{{ review.dealer_id }}</p>
+                            <p class="card-text"><strong>Sentiment: </strong>{{ review.sentiment }}</p>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
+                {% if reviews|length == 0 %}
+                <div class="col-md-12">
+                    <p>No reviews available.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
 
