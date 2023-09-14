@@ -95,6 +95,12 @@ def get_dealer_details(request, dealer_id):
     
         review_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         reviews = get_dealer_reviews_from_cf(dealer_id=dealer_id)
+
+        # Analyze sentiment for each review
+        for review in reviews:
+            sentiment = analyze_review_sentiments(review)
+            review.sentiment = sentiment  # Update the sentiment attribute of the review
+        
         print(reviews)
         context["reviews"] = reviews
         

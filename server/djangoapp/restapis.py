@@ -159,6 +159,8 @@ def analyze_review_sentiments(dealerreview):
     # Define the URL for sentiment analysis
     url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/ae38d3e7-7f76-412f-9ea3-da080c263c49'
 
+    # Debugging: Print the review text
+    print("Review Text:", dealerreview.review)
     # Construct the parameters from the dealerreview object
     params = {
         "text": dealerreview.review,
