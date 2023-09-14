@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 # Define the base URLs from get-dealership.js and reviews.py
 DEALERSHIP_BASE_URL = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-REVIEWS_BASE_URL = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+REVIEWS_BASE_URL = 'https://plumball33-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews'
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -125,22 +125,22 @@ def get_dealer_reviews_from_cf(dealer_id):
     url = f"{REVIEWS_BASE_URL}?id={dealer_id}"
     # Pass the API key to the get_request function
     api_key = "OkANvrZmn9NYhSIQNSO1z5lIlZ5c3ays3FsQDOBUdrhx"
-    json_result = get_request(url)
+    json_result = get_request(url, api_key=api_key)
 
     results = []
     if json_result:
         for review_data in json_result:
             # Create a DealerReview object with values from the JSON data
             dealer_review = DealerReview(
-                review_id=review_data.get("id", ""),
-                dealer_id=review_data.get("dealership", ""),
-                review=review_data.get("review", ""),
-                purchase=review_data.get("purchase", ""),
-                purchase_date=review_data.get("purchase_date", ""),
-                car_make=review_data.get("car_make", ""),
-                car_model=review_data.get("car_model", ""),
-                car_year=review_data.get("car_year", ""),
-                sentiment=analyze_review_sentiments(review_data.get("review", ""))
+                review_id=review_data["id"],
+                dealer_id=review_data["dealership"],
+                review=review_data["review"],
+                purchase=review_data["purchase"],
+                purchase_date=review_data["purchase_date"],
+                car_make=review_data["car_make"],
+                car_model=review_data["car_model"],
+                car_year=review_data["car_year"],
+                sentiment=analyze_review_sentiments(review_data["review"])
             )
             results.append(dealer_review)
 
