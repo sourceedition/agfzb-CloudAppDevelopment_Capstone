@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import DealerReview
 # from .restapis import related methods
 from django.contrib.auth.forms import UserCreationForm
-from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments, get_dealer_by_id
+from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments, get_dealer_by_id, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -115,13 +115,39 @@ def add_review(request, dealer_id=None):
         return render(request, 'djangoapp/add_review.html', context)
 
     if request.method == 'POST':
-        python_server_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
-        review_data = request.POST.dict()
+        python_server_url = f"https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review?dealerId={dealer_id}"
+        
+        review_data = {
+            'dealer_id': dealer_id,
+            'name': request.POST.get('name'),
+            'dealership': request.POST.get('dealership'),
+            'review': request.POST.get('review'),
+            'purchase': request.POST.get('purchase'),
+            'purchase_date': request.POST.get('purchase_date'),
+            'car_make': request.POST.get('car_make'),
+            'car_model': request.POST.get('car_model'),
+            'car_year': request.POST.get('car_year'),
+        }
+
+        # Create a dictionary for the JSON payload
+        json_payload = {
+            "review": review_data
+        }
+
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "Authentication required to post a review")
+            return redirect('custom_login')  # Redirect to the login page or handle authentication as needed
 
         try:
-            response = requests.post(python_server_url, json=review_data)
-            messages.success(request, "Review posted successfully")
+            # Call the post_request method with the payload
+            response = post_request(python_server_url, json_payload=json_payload, dealerId=dealer_id)
+
+            if response.status_code == 201:
+                messages.success(request, "Review posted successfully")
+            else:
+                messages.error(request, "Failed to post review")
         except requests.exceptions.RequestException as e:
             messages.error(request, "Failed to post review")
 
-        return redirect('djangoapp:get_reviews_detail', dealer_id=dealer_id)
+        return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
