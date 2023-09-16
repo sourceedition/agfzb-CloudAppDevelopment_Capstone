@@ -146,9 +146,16 @@ def add_review(request, dealer_id=None):
 
             if response.status_code == 201:
                 messages.success(request, "Review posted successfully")
+                
+                # Immediately retrieve reviews for the same dealer_id
+                reviews = get_dealer_reviews_from_cf(dealer_id)
+                
+                # Log the retrieved reviews for debugging
+                print("Retrieved Reviews:", reviews)
             else:
                 messages.error(request, "Failed to post review")
         except requests.exceptions.RequestException as e:
             messages.error(request, "Failed to post review")
 
         return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
+        

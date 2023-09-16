@@ -34,7 +34,7 @@ def get_request(url, api_key=None, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
-def post_request(url, json_payload, dealerId=None, **kwargs):
+def post_request(url, json_payload, dealerId, **kwargs):
     try:
         params = {}
         if dealerId is not None:
