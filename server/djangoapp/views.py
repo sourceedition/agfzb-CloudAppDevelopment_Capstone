@@ -135,6 +135,9 @@ def add_review(request, dealer_id=None):
             "review": review_data
         }
 
+        # Debugging: Print the json_payload
+        print("Review Data - JSON Payload:", json_payload)
+
         # Check if the user is authenticated
         if not request.user.is_authenticated:
             messages.error(request, "Authentication required to post a review")
@@ -158,4 +161,3 @@ def add_review(request, dealer_id=None):
             messages.error(request, "Failed to post review")
 
         return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
-        
