@@ -56,10 +56,9 @@
                 </div>
                 {% endif %}
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="{% url 'djangoapp:add_review' dealer_id=dealer.dealer_id %}" class="btn btn-primary">Add Review</a>
-                </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'djangoapp:add_review' dealer_id=dealer_id %}" class="btn btn-primary">Add Review</a>
         </div>
 
     <!--Add a nav bar here -->

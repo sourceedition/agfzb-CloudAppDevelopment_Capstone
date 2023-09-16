@@ -103,6 +103,7 @@ def get_dealer_details(request, dealer_id):
         
         print(reviews)
         context["reviews"] = reviews
+        context["dealer_id"] = dealer_id
         
         return render(request, 'djangoapp/dealer_details.html', context)
 
