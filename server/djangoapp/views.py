@@ -48,7 +48,7 @@ def custom_login(request):
             return redirect('djangoapp:index')
         else:
             messages.error(request, 'Please Log In.')
-    return render(request, 'login.html')
+    return render(request, 'djangoapp/login.html')
 
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
@@ -137,7 +137,7 @@ def add_review(request, dealer_id=None):
         # Check if the user is authenticated
         if not request.user.is_authenticated:
             messages.error(request, "Authentication required to post a review")
-            return redirect('custom_login')  # Redirect to the login page or handle authentication as needed
+            return redirect('djangoapp:custom_login')  # Redirect to the login page or handle authentication as needed
 
         try:
             # Call the post_request method with the payload
