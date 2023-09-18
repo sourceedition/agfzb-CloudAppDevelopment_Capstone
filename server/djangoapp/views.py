@@ -138,11 +138,6 @@ def add_review(request, dealer_id=None):
         # Debugging: Print the json_payload
         print("Review Data - JSON Payload:", json_payload)
 
-        # Check if the user is authenticated
-        if not request.user.is_authenticated:
-            messages.error(request, "Authentication required to post a review")
-            return redirect('djangoapp:custom_login')  # Redirect to the login page or handle authentication as needed
-
         try:
             # Call the post_request method with the payload
             response = post_request(python_server_url, json_payload=json_payload, dealerId=dealer_id)
