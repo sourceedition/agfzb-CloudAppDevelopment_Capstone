@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import DealerReview, CarModel, CarMake
 # from .restapis import related methods
 from django.contrib.auth.forms import UserCreationForm
-from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments, get_dealer_by_id, post_request
+from .restapis import get_request, get_dealers_from_cf, get_dealer_reviews_from_cf, analyze_review_sentiments, post_request, get_dealer_by_id
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -77,7 +77,7 @@ def custom_signup(request):
 def get_dealerships(request):
     if request.method == "GET":
         context = {}
-        url = 'https://plumball33-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
+        url = 'https://plumball33-3000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
         dealerships = get_dealers_from_cf(url)
         context["dealership_list"] = dealerships
         return render(request, 'djangoapp/index.html', context)
@@ -89,8 +89,8 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         context = {}
-        dealer_url = 'https://plumball33-3000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
-        dealer = get_dealer_by_id(dealer_id=dealer_id)
+        dealer_url = 'https://plumball33-3000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
+        dealer = get_dealer_by_id(dealer_url, dealer_id=dealer_id)
         context["dealer"] = dealer
     
         review_url = "https://plumball33-3000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
