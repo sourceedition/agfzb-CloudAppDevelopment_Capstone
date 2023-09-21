@@ -78,7 +78,7 @@ def get_dealers_from_cf(url, **kwargs):
 
     return results
 
-def get_dealer_by_id(dealer_id):
+def get_dealer_by_id(dealer_url, dealer_id):
     # Call get_request with the base URL for dealerships and dealerId parameter
     url = REVIEWS_BASE_URL.format(dealer_id=dealer_id)
     json_result = get_request(url)
